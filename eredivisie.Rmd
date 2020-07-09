@@ -1,0 +1,160 @@
+---
+title: "eredivisie"
+author: "Pieter Hobbelen"
+date: "7/4/2020"
+output: html_document
+---
+
+```{r libs}
+library(tidyverse)
+```
+
+
+```{r data}
+seizoensstart <- c(2011, 2001, 2002, 2003, 2004, 2005, 2006, 2006, 2008, 2011, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020)
+
+club <- c("ADO Den Haag", "AFC Ajax", "AZ", "BV De Graafschap", "SBV Excelsior", "FC Den Bosch", "FC Dordrecht", "FC Emmen", "FC Groningen", "FC Twente", "FC Utrecht", "FC Volendam",  "Feyenoord", "Fortuna Sittard", "Go Ahead Eagles", "Heracles Almelo", "NAC", "N.E.C.", "PEC Zwolle", "PSV", "RBC Roosendaal", "RKC Waalwijk", "Roda JC Kerkrade", "SC Cambuur-Leeuwarden", "sc Heerenveen", "Sparta Rotterdam", "SBV Vitesse", "VVV-Venlo", "Willem II")
+
+afkorting_max_3_karakters <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+stad <- c("Den Haag", "Amsterdam", "Alkmaar", "Doetinchem", "Rotterdam", "Den Bosch", "Dordrecht", "Emmen", "Groningen", "Enschede", "Utrecht", "Volendam", "Rotterdam", "Sittard", "Deventer", "Almelo", "Breda", "Nijmegen", "Zwolle", "Eindhoven", "Roosendaal", "Waalwijk", "Kerkrade", "Leeuwarden", "Heerenveen", "Rotterdam", "Arhnem", "Venlo", "Tilburg")
+
+resultaat_2000 <- c(NA, 3, 13, 15, NA, NA, NA, NA, 14, 11, 5, NA, 2, 16, NA, NA, 9, 12, NA, 1, 18, 7, 4, NA, 10, 17, 6, NA, 8)
+
+playoffs_2000 <- c(NA, "3Q CL", NA, NA, NA, NA, NA, NA, NA, "KNVB Beker", "UC", NA, "CL", "Nacomp.", NA, NA, NA, NA, NA, "Groepsfase CL", "Directe degradatie", "3R IT Cup", "UC", NA, "2R IT Cup", "Nacomp.", NA, NA, NA)
+
+playoffs_2000_resultaat <- c(NA, "3Q CL, 2R UC", NA, NA, NA, NA, NA, NA, NA, "2R UC", "2R UC", NA, "3Q CL, F UC", "Handhaving", NA, NA, NA, NA, NA, "Groepsfase CL, 1/4F UC", "Degradatie, directe promotie FC Den Bosch", "3R IT Cup", "UC", NA, "2R IT Cup", "Handhaving", NA, NA, NA)
+
+resultaat_2001 <- c(NA, 1, 10, 14, NA, 16, NA, NA, 15, 12, 7, NA, 3, 18, NA, NA, 6, 9, NA, 2, NA, 8, 13, NA, 4, 17, 5, NA, 11)
+
+playoffs_2001 <- c(NA, "Groepsfase CL", NA, NA, NA, "Nacomp.", NA, NA, NA, NA, "Verliezend finalist KNVB Beker", NA, "3Q CL", "Directe degradatie", NA, NA, "3R IT Cup", NA, NA, "Groepsfase CL", NA, NA, NA, NA, "UC", "Nacomp.", "UC", NA, "2R IT Cup")
+
+playoffs_2001_resultaat <- c(NA, "1/4F CL", NA, NA, NA, "Geen handhaving", NA, NA, NA, NA, "1R UC", NA, "Groepsfase CL", "Degradatie, directe promotie PEC Zwolle", NA, NA, "3R IT Cup", NA, NA, "1R CL", NA, NA, NA, NA, "1R UC", "Geen handhaving", "3R UC", NA, "1/2F IT Cup")
+
+resultaat_2002 <- c(NA, 2, 10, 18, 17, NA, NA, NA, 15, 12, 8, NA, 3, NA, NA, NA, 4, 5, 16, 1, 13, 9, 6, NA, 7, NA, 14, NA, 11)
+
+playoffs_2002 <- c(NA, "3Q CL", NA, "Directe degradatie", "Nacomp.", NA, NA, NA, NA, NA, "KNVB Beker", NA, "UC", NA, NA, NA, "UC", "UC", "Nacomp.", "Groepsfase CL", NA, NA, NA, NA, "3R IT Cup", NA, NA, NA, "2R IT Cup")
+
+playoffs_2002_resultaat <- c(NA, "3Q CL", NA, "Degradatie, directe promotie ADO Den Haag", "Geen handhaving", NA, NA, NA, NA, NA, "2R UC", NA, "2R UC", NA, NA, NA, "1R UC", "1R UC", "Handhaving", "Groepsfase CL, 1/4F UC", NA, NA, NA, NA, "3R IT Cup", NA, NA, NA, "2R IT Cup")
+
+resultaat_2003 <- c(15, 1, 5, NA, NA, NA, NA, NA, 13, 8, 10, 17,3, NA, NA, NA, 9, 14, 18, 2, 12, 11, 6, NA, 4, NA, 16, NA, 7)
+
+playoffs_2003 <- c(NA, "Groepsfase CL", "UC", NA, NA, NA, NA, NA, NA, NA, "KNVB Beker", "Nacomp.", "UC", NA, NA, NA, NA, "2R IT Cup", "Directe degradatie", "3Q CL", NA, NA, "3R IT Cup", NA, "UC", NA, "Nacomp.", NA, NA)
+
+playoffs_2003_resultaat <- c(NA, "Groepsfase CL, 3R UC", "1/2F UC", NA, NA, NA, NA, NA, NA, NA, "Groepsfase UC", "Geen handhaving", "3R UC", NA, NA, NA, NA, "2R IT Cup", "Degradatie, directe promotie FC Den Bosch", "1/2F CL", NA, NA, "3R IT Cup", NA, "3R UC", NA, "Handhaving", NA, NA)
+
+resultaat_2004 <- c(14, 2, 3, 17, NA, 18, NA, NA, 12, 6, 11, NA, 4, NA, NA, NA, 15, 13, NA, 1, 16, 9, 8, NA, 5, NA, 7, NA, 10)
+
+playoffs_2004 <- c(NA, "3Q CL", "UC", "Nacomp.", NA, "Directe degradatie", NA, NA, NA, NA, NA, NA, "UC", NA, NA, NA, NA, NA, NA, "Groepsfase CL", "Nacomp.", NA, "3R IT Cup", NA, "UC", NA, NA, NA, "Verliezend finalist KNVB Beker")
+
+playoffs_2004_resultaat <- c(NA, "1/8F CL", "1/2F UC", "Geen handhaving", NA, "Degradatie, directe promotie Heracles Almelo", NA, NA, NA, NA, NA, NA, "3R UC", NA, NA, NA, NA, NA, NA, "1/2F CL", "Handhaving", NA, "1/2F IT Cup", NA, "3R UC", NA, NA, NA, "1R UC")
+
+resultaat_2005 <- c(15, 4, 2, NA, NA, NA, NA, NA, 5, 9, 6, NA,  3, NA, NA, 13, 16, 10, NA, 1, 18, 12, 8, NA, 7, 14, 11, NA, 17)
+
+playoffs_2005 <- c(NA, "PO 3R CL", "PO 3R CL", NA, NA, NA, NA, NA, "PO 3R CL", "PO UC", "PO UC", NA, "PO 3R CL", NA, NA, "PO IT Cup", "Nacomp.", "PO IT Cup", NA, "Groepsfase CL", "Directe degradatie", "PO IT Cup", "PO UC", NA, "PO UC", NA, "PO IT Cup", NA, "Nacomp.")
+
+playoffs_2005_resultaat <- c(NA, "Winnaar PO CL, 3Q CL, 3R UC", "3R UC", NA, NA, NA, NA, NA, "Verliezer PO CL, 1R UC", "Winnaar PO IT Cup, Winnaar IT Cup, 2Q UC", "Uitgeschakeld", NA, "1R UC", NA, NA, "Uitgeschakeld", "Handhaving", "Uitgeschakeld", NA, "1/8F CL", "Directe degradatie, directe promotie Excelsior", "Uitgeschakeld", "Uitgeschakeld", NA, "Winnaar PO UC, 3R UC", NA, "Uitgeschakeld", NA, "Handhaving")
+
+resultaat_2006 <- c(18, 2, 3, NA, 16, NA, NA, NA, 8, 4, 9, NA, 7, NA, NA, 14, 11, 10, NA, 1, NA, 17, 6, NA, 5, 13, 12, NA, 15)
+
+playoffs_2006 <- c("Directe degradatie", "Plaatsing via PO voorronde CL", "Plaatsing via PO UC", NA, "Nacomp.", NA, NA, NA, "Plaatsing via PO UC", "Uitschakeling PO, alsnog plaatsing UC", "Plaatsing Intertoto Cup", NA, "Uitschakeling", NA, NA, NA, "Uitschakeling", "Uitschakeling", NA, "Directe plaatsing groepsfase CL", NA, "Nacomp.", "Uitschakeling", NA, "Uitschakeling PO, alsnog plaatsing UC", "Uitschakeling", "Uitschakeling", NA, NA)
+
+playoffs_2006_resultaat <- c("Directe degradatie, directe promotie De Graafschap", "3R UC", "1/4F UC", NA, "Handhaving", NA, NA, NA, "1R UC", "1R UC", "F IT Cup", NA, "3R UC, toen uitgesloten vanwege rellen.", NA, NA, NA, NA, NA, NA, "Groesfase CL, 1/4F UC", NA, "Geen handhaving", NA, NA, "Groepsfase UC", NA, NA, NA, NA)
+
+resultaat_2007 <- c(NA, 2, 11, 16, 18, NA, NA, NA, 7, 4, 10, NA, 6, NA, NA, 14, 3, 8, NA, 1, NA, NA, 9, NA, 5, 13, 12, 17, 15)
+
+playoffs_2007 <- c(NA, "PO 3R CL", NA, "Nacomp.", "Directe degradatie", NA, NA, NA, "PO UC", "PO 3R CL", "PO UC", NA, "UC", NA, NA, NA, "PO 3R CL", "PO UC", NA, "Groepsfase CL", NA, NA, "PO UC", NA, "PO 3R CL", NA, NA, "Nacomp.", NA)
+
+playoffs_2007_resultaat <- c(NA, "1/8F UC", NA, "Handhaving", "Degradatie, directe promotie FC Volendam", NA, NA, NA, "Uitgeschakeld", "3R UC", "Uitgeschakeld", NA, "Groepsfase UC", NA, NA, NA, "Uitgeschakeld", "3R UC", NA, "Groepsfase CL", NA, NA, "Uitgeschakeld", NA, "Groepsfase UC", NA, NA, "Geen handhaving", NA)
+
+resultaat_2008 <- c(14, 3, 1, 17, NA, NA, NA, NA, 6, 2, 9, 18, 7, NA, NA, 15, 8, 11, NA, 4, NA, NA, 16, NA, 5, 13, 10, NA, 12)
+
+playoffs_2008 <- c(NA, "PO EL", "Groepsfase CL", "Nacomp.", NA, NA, NA, NA, "PO 2Q EL", "3Q CL", "PO 2Q EL", "Directe degradatie", "PO 1Q EL", NA, NA, NA, "PO 2Q EL ", NA, NA, "3Q EL", NA, NA, "Nacomp.", NA, "PO EL", NA, NA, NA, NA)
+
+playoffs_2008_resultaat <- c(NA, "Laatste 32 UC", "Groepsfase CL", "Geen handhaving", NA, NA, NA, NA, "Uitgeschakeld", "Laatste 32 EL", "Uitgeschakeld", "Degradatie, directe promotie VVV-Venlo", "Uitgeschakeld", NA, NA, NA, "PO EL", NA, NA, "Laatste 32 EL", NA, NA, "Handhaving", NA, "Groepsfase EL", NA, NA, NA, NA)
+
+resultaat_2009 <- c(15, 2, 5, NA, NA, NA, NA, NA, 8, 1, 7, NA, 4, NA, NA, 6, 10, 13, NA, 3, NA, 18, 9, NA, 11, 16, 14, 12, 17)
+
+playoffs_2009 <-  c(NA, "3Q CL", "3Q EL", NA, NA, NA, NA, NA, "PO 2Q EL", "Groepsfase CL", "PO 2Q EL", NA, "PO EL", NA, NA, "PO 2Q EL", NA, NA, NA, "PO EL", NA, "Directe degradatie", "PO 2Q EL", NA, NA, "Nacomp.", NA, NA, "Nacomp.")
+
+playoffs_2009_resultaat <- c(NA, "1/8F EL", "Groepsfase EL", NA, NA, NA, NA, NA, "Uitgeschakeld", "Groepsfase CL, 1/4F EL", "Groepsfase EL", NA, "PO EL", NA, NA, "Uitgeschakeld", NA, NA, NA, "1/4F EL", NA, "Degradatie, directe promotie De Graafschap", "Uitgeschakeld", NA, NA, "Geen handhaving", NA, NA, "Handhaving")
+
+resultaat_2010 <- c(7, 1, 4, 14, 16, NA, NA, NA, 5, 2, 9, NA, 10, NA, NA, 8, 13, 11, NA, 3, NA, NA, 6, NA, 12, NA, 15, 17, 18)
+
+playoffs_2010 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2010_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2011 <- c(15, 1, 4, 17, 18, NA, NA, NA, 14, 6, 11, NA, 2, NA, NA, 12, 13, 8, NA, 3, NA, 9, 10, NA, 5, NA, 7, 16, NA)
+
+playoffs_2011 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2011_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2012 <- c(9, 1, 10, NA, NA, NA, NA, NA, 7, 6, 5, NA, 3, NA, NA, 12, 13, 15, 11, 2, NA, 14, 16, NA, 8, NA, 4, 17, 18)
+
+playoffs_2012 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2012_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2013 <- c(9, 1, 8, NA, NA, NA, NA, NA, 7, 3, 10, NA, 2, NA, 13, 14, 15, 17, 11, 4, NA, 16, 18, 12, 5, NA, 6, NA, NA)
+
+playoffs_2013 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2013_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2014 <- c(13, 2, 3, NA, 15, NA, 18, NA, 8, 10, 11, NA, 4, NA, 17, 14, 16, NA, 6, 1, NA, NA, NA, 12, 7, NA, 5, NA, 9)
+
+playoffs_2014 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2014_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2015 <- c(11, 2, 4, 17, 15, NA, NA, NA, 7, 13, 5, NA, 3, NA, NA, 6, NA, 10, 8, 1, NA, NA, 14, 18, 12, NA, 9, NA, 16)
+
+playoffs_2015 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2015_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2016 <- c(11, 2, 6, NA, 12, NA, NA, NA, 8, 7, 4, NA,  1, NA, 18, 10, NA, 16, 14, 3, NA, NA, 17, NA, 9, 15, 5, NA, 13)
+
+playoffs_2016 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2016_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2017 <- c(7, 2, 3, NA, 11, NA, NA, NA, 12, 18, 5, NA,  4, NA, NA, 10, 14, NA, 9, 1, NA, NA, 16, NA, 8, 17, 6, 15, 13)
+
+playoffs_2017 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2017_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2018 <- c(9, 1, 4, 17, 16, NA, NA, 14, 8, 6, NA, NA, 3, 15, NA, 7, 18, NA, 13, 2, NA, NA, NA, NA, 11, NA, 5, 12, 10)
+
+playoffs_2018 <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2018_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaat_2019_corona <- c(17, 1, 2, NA, NA, NA, NA, 12, 9, 14, 6, NA, 3, 16, NA, 8, NA, NA, 15, 4, NA, 18, NA, NA, 10, 11, 7, 13, 5)
+
+playoffs_2019_corona <-  c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+playoffs_2019_corona_resultaat <- c("ADO", "AJA", "AZ", "GRA", "EXC", "DBO", "DOR", "EMM", "GRO", "TWE", "UTR", "VOL", "FEY", "FOR", "GAE", "HER", "NAC", "NEC", "PEC", "PSV", "RBC", "RKC", "RJC", "CAM", "HEE", "SPA", "VIT", "VVV", "WIL")
+
+resultaten <- c(resultaat_2011, resultaat_2001, resultaat_2002, resultaat_2003, resultaat_2004, resultaat_2005, resultaat_2006, resultaat_2007, resultaat_2008, resultaat_2011, resultaat_2010, resultaat_2011, resultaat_2012, resultaat_2013, resultaat_2014, resultaat_2015, resultaat_2016, resultaat_2017, resultaat_2018, resultaat_2019_corona )
+
+clubs <- c(club, club, club, club, club, club, club, club, club, club, club, club, club, club, club, club, club, club, club, club)
+
+afkorting_max_3_karakters_1 <- c(afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters, afkorting_max_3_karakters)
+
+jaren <- c(2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2001, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2002, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2003, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2004, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2005, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2006, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2007, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2008, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2009, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2011, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2012, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2015, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2016, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2017, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2018, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019, 2019)
+
+eredivisie_db1 <- data.frame(club, afkorting_max_3_karakters, stad, resultaat_2000, playoffs_2000, playoffs_2000_resultaat, resultaat_2001, playoffs_2001, playoffs_2001_resultaat, resultaat_2002, playoffs_2002, playoffs_2002_resultaat, resultaat_2003, playoffs_2003, playoffs_2003_resultaat, resultaat_2004, playoffs_2004, playoffs_2004_resultaat, resultaat_2005, playoffs_2005, playoffs_2005_resultaat, resultaat_2006, playoffs_2006_resultaat, playoffs_2006_resultaat, resultaat_2007, resultaat_2008, resultaat_2009, resultaat_2010, resultaat_2011, resultaat_2012, resultaat_2013, resultaat_2014, resultaat_2015, resultaat_2016, resultaat_2017, resultaat_2018, resultaat_2019_corona)
+eredivisie_db2 <- data.frame(clubs, afkorting_max_3_karakters_1, jaren, resultaten)
+eredivisie_db1
+eredivisie_db2
+```
+
+```{r plots}
+eredivisie_db2 %>% ggplot(aes(jaren, -resultaten,label = afkorting_max_3_karakters_1)) + geom_label()
+```
+
+
